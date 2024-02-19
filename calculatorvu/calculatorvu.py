@@ -8,10 +8,18 @@ def multiply(x, y):
     return x * y
 
 def divide(x, y):
-    if y == 0:
-        return "Error! Division by zero."
-    else:
+    try:
         return x / y
+    except ZeroDivisionError:
+        return "Error! Division by zero."
+
+def get_float(prompt):
+    """Utility function to safely convert user input to a float."""
+    while True:
+        try:
+            return float(input(prompt))
+        except ValueError:
+            print("Invalid input! Please enter a numeric value.")
 
 # Function to drive the calculator
 def simple_calculator():
@@ -21,37 +29,28 @@ def simple_calculator():
     print("3. Multiply")
     print("4. Divide")
 
+    operations = {'1': add, '2': subtract, '3': multiply, '4': divide}
+
     while True:
-        # Take input from the user
         choice = input("Enter choice(1/2/3/4): ")
 
-        # Check if choice is one of the four options
-        if choice in ('1', '2', '3', '4'):
-            num1 = float(input("Enter first number: "))
-            num2 = float(input("Enter second number: "))
+        if choice in operations:
+            num1 = get_float("Enter first number: ")
+            num2 = get_float("Enter second number: ")
 
-            if choice == '1':
-                print(num1, "+", num2, "=", add(num1, num2))
+            result = operations[choice](num1, num2)
 
-            elif choice == '2':
-                print(num1, "-", num2, "=", subtract(num1, num2))
-
-            elif choice == '3':
-                print(num1, "*", num2, "=", multiply(num1, num2))
-
-            elif choice == '4':
-                result = divide(num1, num2)
-                if isinstance(result, str):  # If result is an error message
-                    print(result)
-                else:
-                    print(num1, "/", num2, "=", result)
+            if choice == '4' and num2 == 0:
+                print("Error! Division by zero.")
+            else:
+                print("Result:", result)
 
             # Ask if the user wants to calculate again
             next_calculation = input("Let's do next calculation? (yes/no): ")
             if next_calculation.lower() != 'yes':
                 break
         else:
-            print("Invalid Input")
+            print("Invalid Input. Please select a number between 1 and 4.")
 
 # Run the calculator
 simple_calculator()
