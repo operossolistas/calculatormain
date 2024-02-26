@@ -1,8 +1,8 @@
-﻿from flask import Flask, request
+﻿from flask import Flask, request, abort
 
 app = Flask(__name__)
 
-# Arithmetic operations
+# Operacijos
 def sudetis(pirmas, antras):
     return pirmas + antras
 
@@ -47,8 +47,12 @@ def sakyk_labas():
 
 @app.route("/skaicius")  # Route 3: Calculation
 def skaiciavimo():
-    skaicius1 = request.args.get("test", 0, type=int)
-    skaicius2 = request.args.get("test2", 0, type=int)
+    try:
+        skaicius1 = float(request.args.get("test", type=str))
+        skaicius2 = float(request.args.get("test2", type=str))
+    except ValueError:
+        return "Prašome įvesti tik skaičius."
+
     operation = request.args.get("operation")
 
     if operation == "sudetis":
