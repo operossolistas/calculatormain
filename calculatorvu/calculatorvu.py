@@ -1,56 +1,77 @@
-def add(x, y):
-    return x + y
+''' 1 susidiegiame Flask
+        pip3 install Flask
+        pip install Flask
+''' 
 
-def subtract(x, y):
-    return x - y
+# 2. Importuojame
 
-def multiply(x, y):
-    return x * y
+from flask import Flask, request
+app = Flask(__name__)
 
-def divide(x, y):
-    try:
-        return x / y
-    except ZeroDivisionError:
-        return "Error! Division by zero."
 
-def get_float(prompt):
-    """Utility function to safely convert user input to a float."""
-    while True:
-        try:
-            return float(input(prompt))
-        except ValueError:
-            print("Invalid input! Please enter a numeric value.")
 
-# Function to drive the calculator
-def simple_calculator():
-    print("Select operation:")
-    print("1. Add")
-    print("2. Subtract")
-    print("3. Multiply")
-    print("4. Divide")
+skaicius = 0 # apsirasome kintamaji ( Globalus )
 
-    operations = {'1': add, '2': subtract, '3': multiply, '4': divide}
+def sudetis(pirmas,antras):
+        return pirmas+antras
 
-    while True:
-        choice = input("Enter choice(1/2/3/4): ")
 
-        if choice in operations:
-            num1 = get_float("Enter first number: ")
-            num2 = get_float("Enter second number: ")
 
-            result = operations[choice](num1, num2)
 
-            if choice == '4' and num2 == 0:
-                print("Error! Division by zero.")
-            else:
-                print("Result:", result)
+@app.route("/") # Route 1
+def hello_world():
 
-            # Ask if the user wants to calculate again
-            next_calculation = input("Let's do next calculation? (yes/no): ")
-            if next_calculation.lower() != 'yes':
-                break
-        else:
-            print("Invalid Input. Please select a number between 1 and 4.")
+    return f"""
+                <form action="/skaicius">
+                    <label for="test">skaicius 1</label><br>
+                        <input type="text" id="test" name="test" value="0"><br>
+                        </br></br>
 
-# Run the calculator
-simple_calculator()
+                    <label for="test2">skaicius 2</label><br>
+                        <input type="text" id="test2" name="test2" value="0"><br><br>
+                        </br></br>
+                        
+                    <label for="[[__ID__]]">skaicius 2</label><br>   
+                        <input type="text" id="[[__ID__]]" name="[[__ID__]]" value="0"><br><br>
+                        </br></br>
+
+                    <input type="submit" value="Submit">
+                </form> 
+            """
+
+@app.route("/labas")  # Route 2
+def sakyk_labas():
+    global skaicius ## Naudoju globalu kintamaji
+    skaicius = skaicius +1 ## kaskart atidare pridedam 1
+    return f"Labas {skaicius}"
+
+
+    '''
+        /skaicius?test=100
+        /skaicius?test=0  &  test2=0
+    '''
+
+@app.route("/skaicius") # Route 3
+def skaiciavimo():
+    #UZKLAUSA. ARGUMENTAI. METODAS()
+    skaicius = request.args.get("test") ### Pasiimam argumenta is URL pvz.: /skaicius?test=100
+    skaicius2 = request.args.get("test2") ### Pasiimam argumenta 2 is URL pvz.: /skaicius?test2=100
+
+    suma = sudetis(int(skaicius2),int(skaicius))
+
+    return f"Tavo ivestas skaicius: {suma}"
+
+
+
+
+
+if __name__ == "__main__":
+    app.run()
+
+
+
+
+
+
+
+
